@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartSchool — Teacher Portal</title>
+  <meta name="theme-color" content="#4f46e5"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<div id="page-loader" class="page-loader"><div class="spinner-ring"></div><span style="color:var(--clr-text-muted);font-size:.875rem;">Loading…</span></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">SS</div>
+      <div><div class="sidebar-brand-text">SmartSchool</div><div class="sidebar-brand-sub">Teacher Portal</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Overview</div>
+      <div class="nav-item active" data-section="dashboard" onclick="showSection('dashboard',this)"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></div>
+      <div class="sidebar-section">Classroom</div>
+      <div class="nav-item" data-section="attendance" onclick="showSection('attendance',this)"><i class="bi bi-calendar-check-fill"></i><span>Attendance</span></div>
+      <div class="nav-item" data-section="homework" onclick="showSection('homework',this)"><i class="bi bi-journal-text"></i><span>Homework</span></div>
+      <div class="nav-item" data-section="exams" onclick="showSection('exams',this)"><i class="bi bi-clipboard2-data-fill"></i><span>Exams &amp; Marks</span></div>
+      <div class="sidebar-section">Resources</div>
+      <div class="nav-item" data-section="timetable" onclick="showSection('timetable',this)"><i class="bi bi-table"></i><span>My Timetable</span></div>
+      <div class="nav-item" data-section="notices" onclick="showSection('notices',this)"><i class="bi bi-megaphone-fill"></i><span>Notices</span></div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="avatar" id="user-avatar">T</div>
+        <div class="user-info"><div class="user-name" id="user-name">Teacher</div><div class="user-role" id="user-role">Teacher</div></div>
+        <button class="btn-ghost" style="padding:.35rem .5rem;border:none;" data-logout title="Logout"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="d-flex align-items-center gap-2">
+        <button class="hamburger" id="hamburger"><i class="bi bi-list"></i></button>
+        <span class="topbar-title" id="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <div id="offline-banner" style="display:none;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fbbf24;border-radius:6px;padding:.3rem .75rem;font-size:.78rem;align-items:center;gap:.4rem;"><i class="bi bi-wifi-off"></i> Offline</div>
+        <button class="btn-ghost" style="padding:.4rem .8rem;font-size:.875rem;" data-logout><i class="bi bi-box-arrow-right"></i> Logout</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- DASHBOARD -->
+      <section id="sec-dashboard">
+        <div class="section-header">
+          <div><div class="section-title">Welcome, <span id="teacher-name">Teacher</span> 👋</div><div class="section-subtitle" id="t-date">—</div></div>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(79,70,229,.15);color:#818cf8;"><i class="bi bi-people-fill"></i></div><div><div class="stat-value" id="t-total-students">—</div><div class="stat-label">My Students</div></div></div></div>
+          <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(6,182,212,.15);color:#22d3ee;"><i class="bi bi-building"></i></div><div><div class="stat-value" id="t-sections">—</div><div class="stat-label">Sections</div></div></div></div>
+          <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,.15);color:#34d399;"><i class="bi bi-journal-text"></i></div><div><div class="stat-value" id="t-homework">—</div><div class="stat-label">Homework</div></div></div></div>
+          <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.15);color:#fbbf24;"><i class="bi bi-clipboard2-data-fill"></i></div><div><div class="stat-value" id="t-exams">—</div><div class="stat-label">Exams</div></div></div></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card-glass p-4">
+              <h6 class="mb-3 fw-bold">My Classes</h6>
+              <div id="my-classes-list">Loading…</div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card-glass p-4">
+              <h6 class="mb-3 fw-bold">Today's Timetable</h6>
+              <div id="today-timetable">Loading…</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ATTENDANCE -->
+      <section id="sec-attendance" style="display:none;">
+        <div class="section-header"><div class="section-title">Mark Attendance</div></div>
+        <div class="card-glass p-4 mb-4">
+          <div class="row g-3">
+            <div class="col-md-5"><label class="form-label">Section</label><select id="att-section" class="form-input" onchange="loadAttendanceList()"><option value="">— Select section —</option></select></div>
+            <div class="col-md-4"><label class="form-label">Date</label><input type="date" id="att-date" class="form-input" onchange="loadAttendanceList()"></div>
+            <div class="col-md-3 d-flex align-items-end"><button class="btn-primary-ss w-100" onclick="submitAttendance()"><i class="bi bi-check2-all"></i> Submit</button></div>
+          </div>
+        </div>
+        <div id="attendance-list">
+          <div class="empty-state"><i class="bi bi-calendar-check"></i><p>Select a section and date to mark attendance.</p></div>
+        </div>
+      </section>
+
+      <!-- HOMEWORK -->
+      <section id="sec-homework" style="display:none;">
+        <div class="section-header">
+          <div class="section-title">Homework</div>
+          <button class="btn-primary-ss" onclick="openModal('modal-hw')"><i class="bi bi-plus-lg"></i> Assign Homework</button>
+        </div>
+        <div id="homework-list">Loading…</div>
+      </section>
+
+      <!-- EXAMS -->
+      <section id="sec-exams" style="display:none;">
+        <div class="section-header">
+          <div class="section-title">Exams &amp; Marks</div>
+          <button class="btn-primary-ss" onclick="openModal('modal-exam')"><i class="bi bi-plus-lg"></i> Create Exam</button>
+        </div>
+        <div id="exams-list">Loading…</div>
+      </section>
+
+      <!-- TIMETABLE -->
+      <section id="sec-timetable" style="display:none;">
+        <div class="section-header"><div class="section-title">My Timetable</div></div>
+        <div id="timetable-content">Loading…</div>
+      </section>
+
+      <!-- NOTICES -->
+      <section id="sec-notices" style="display:none;">
+        <div class="section-header"><div class="section-title">Notices</div></div>
+        <div id="notices-list">Loading…</div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<!-- Assign Homework -->
+<div id="modal-hw" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header"><h5><i class="bi bi-journal-plus me-2"></i>Assign Homework</h5><button class="modal-close" onclick="closeModal('modal-hw')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <div class="row g-3">
+        <div class="col-12"><label class="form-label">Title *</label><input type="text" id="hw-title" class="form-input" placeholder="Homework title"></div>
+        <div class="col-md-6"><label class="form-label">Section *</label><select id="hw-section" class="form-input"><option value="">Select section</option></select></div>
+        <div class="col-md-6"><label class="form-label">Due Date *</label><input type="date" id="hw-due" class="form-input"></div>
+        <div class="col-md-6"><label class="form-label">Max Marks</label><input type="number" id="hw-marks" class="form-input" placeholder="0" min="0"></div>
+        <div class="col-12"><label class="form-label">Description</label><textarea id="hw-desc" class="form-input" rows="3" placeholder="Instructions for students…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-hw')">Cancel</button>
+      <button class="btn-primary-ss" onclick="saveHomework()"><i class="bi bi-check2"></i> Assign</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Exam -->
+<div id="modal-exam" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header"><h5><i class="bi bi-clipboard2-plus me-2"></i>Create Exam</h5><button class="modal-close" onclick="closeModal('modal-exam')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <div class="row g-3">
+        <div class="col-12"><label class="form-label">Exam Name *</label><input type="text" id="ex-name" class="form-input" placeholder="e.g. Unit Test 1 - Mathematics"></div>
+        <div class="col-md-6"><label class="form-label">Section *</label><select id="ex-section" class="form-input"><option value="">Select section</option></select></div>
+        <div class="col-md-6"><label class="form-label">Exam Date *</label><input type="date" id="ex-date" class="form-input"></div>
+        <div class="col-md-6"><label class="form-label">Max Marks *</label><input type="number" id="ex-max" class="form-input" placeholder="100" min="1"></div>
+        <div class="col-md-6"><label class="form-label">Pass Marks *</label><input type="number" id="ex-pass" class="form-input" placeholder="35" min="0"></div>
+        <div class="col-12"><label class="form-label">Description</label><input type="text" id="ex-desc" class="form-input" placeholder="Optional description"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-exam')">Cancel</button>
+      <button class="btn-primary-ss" onclick="saveExam()"><i class="bi bi-check2"></i> Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Enter Marks -->
+<div id="modal-marks" class="modal-overlay">
+  <div class="modal-box" style="max-width:600px;">
+    <div class="modal-header"><h5><i class="bi bi-pencil-square me-2"></i>Enter Marks</h5><button class="modal-close" onclick="closeModal('modal-marks')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <div id="marks-form-content">Loading students…</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-marks')">Cancel</button>
+      <button class="btn-primary-ss" onclick="submitMarks()"><i class="bi bi-check2"></i> Save Marks</button>
+    </div>
+  </div>
+</div>
+
+<!-- Homework Submissions -->
+<div id="modal-submissions" class="modal-overlay">
+  <div class="modal-box" style="max-width:620px;">
+    <div class="modal-header"><h5>Submissions</h5><button class="modal-close" onclick="closeModal('modal-submissions')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body"><div id="submissions-content">Loading…</div></div>
+  </div>
+</div>
+
+<div id="install-banner" class="install-banner">
+  <p><i class="bi bi-phone me-2"></i>Install SmartSchool for quick access.</p>
+  <div class="install-actions">
+    <button class="btn-primary-ss" onclick="installApp()"><i class="bi bi-download"></i> Install</button>
+    <button class="btn-ghost" onclick="dismissInstallBanner()">Dismiss</button>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/pwa.js"></script>
+<script src="/js/teacher-app.js"></script>
+</body>
+</html>

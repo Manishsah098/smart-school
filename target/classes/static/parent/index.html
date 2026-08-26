@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartSchool — Parent Portal</title>
+  <meta name="theme-color" content="#4f46e5"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<div id="page-loader" class="page-loader"><div class="spinner-ring"></div><span style="color:var(--clr-text-muted);font-size:.875rem;">Loading…</span></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+<div class="layout">
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">SS</div>
+      <div><div class="sidebar-brand-text">SmartSchool</div><div class="sidebar-brand-sub">Parent Portal</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Overview</div>
+      <div class="nav-item active" data-section="dashboard" onclick="showSection('dashboard',this)"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></div>
+      <div class="sidebar-section">Child's Progress</div>
+      <div class="nav-item" data-section="attendance" onclick="showSection('attendance',this)"><i class="bi bi-calendar-check-fill"></i><span>Attendance</span></div>
+      <div class="nav-item" data-section="marks" onclick="showSection('marks',this)"><i class="bi bi-graph-up"></i><span>Marks &amp; Results</span></div>
+      <div class="nav-item" data-section="homework" onclick="showSection('homework',this)"><i class="bi bi-journal-text"></i><span>Homework</span></div>
+      <div class="nav-item" data-section="fees" onclick="showSection('fees',this)"><i class="bi bi-cash-coin"></i><span>Fees</span></div>
+      <div class="nav-item" data-section="timetable" onclick="showSection('timetable',this)"><i class="bi bi-table"></i><span>Timetable</span></div>
+      <div class="sidebar-section">School</div>
+      <div class="nav-item" data-section="notices" onclick="showSection('notices',this)"><i class="bi bi-megaphone-fill"></i><span>Notices</span></div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="avatar" id="user-avatar">P</div>
+        <div class="user-info"><div class="user-name" id="user-name">Parent</div><div class="user-role" id="user-role">Parent</div></div>
+        <button class="btn-ghost" style="padding:.35rem .5rem;border:none;" data-logout title="Logout"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="d-flex align-items-center gap-2">
+        <button class="hamburger" id="hamburger"><i class="bi bi-list"></i></button>
+        <span class="topbar-title" id="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <!-- Child switcher -->
+        <select id="child-selector" class="form-input" style="max-width:200px;padding:.4rem .75rem;" onchange="switchChild(this.value)">
+          <option value="">Loading children…</option>
+        </select>
+        <div id="offline-banner" style="display:none;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fbbf24;border-radius:6px;padding:.3rem .75rem;font-size:.78rem;align-items:center;gap:.4rem;"><i class="bi bi-wifi-off"></i> Offline</div>
+        <button class="btn-ghost" style="padding:.4rem .8rem;font-size:.875rem;" data-logout><i class="bi bi-box-arrow-right"></i> Logout</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- DASHBOARD -->
+      <section id="sec-dashboard">
+        <div class="section-header">
+          <div><div class="section-title">Parent Dashboard</div><div class="section-subtitle" id="p-date">—</div></div>
+        </div>
+        <div id="no-child-msg" class="alert-ss info mb-4" style="display:none;">
+          <i class="bi bi-info-circle-fill"></i><span>No child accounts linked. Please contact your school administrator.</span>
+        </div>
+        <!-- Child card -->
+        <div id="child-info-card" class="card-glass p-4 mb-4" style="display:none;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar" style="width:52px;height:52px;font-size:1.25rem;" id="child-avatar">?</div>
+            <div>
+              <div class="fw-bold fs-5" id="child-name">—</div>
+              <div class="text-muted small" id="child-class">—</div>
+              <div class="text-muted small" id="child-id">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(79,70,229,.15);color:#818cf8;"><i class="bi bi-calendar-check-fill"></i></div><div><div class="stat-value" id="c-att">—%</div><div class="stat-label">Attendance</div></div></div></div>
+          <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,.15);color:#34d399;"><i class="bi bi-graph-up"></i></div><div><div class="stat-value" id="c-avg">—%</div><div class="stat-label">Avg. Marks</div></div></div></div>
+          <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.15);color:#fbbf24;"><i class="bi bi-cash-coin"></i></div><div><div class="stat-value" id="c-fees">—</div><div class="stat-label">Fees Due</div></div></div></div>
+          <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(6,182,212,.15);color:#22d3ee;"><i class="bi bi-journal-text"></i></div><div><div class="stat-value" id="c-hw">—</div><div class="stat-label">Pending HW</div></div></div></div>
+        </div>
+        <!-- Attendance warning -->
+        <div id="p-att-warning" class="alert-ss warning mb-4" style="display:none;">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span id="p-att-warning-text">⚠️ Your child's attendance is below the 75% requirement.</span>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card-glass p-4"><h6 class="mb-3 fw-bold">Recent Marks</h6><div id="dash-marks">Loading…</div></div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card-glass p-4"><h6 class="mb-3 fw-bold">Notices</h6><div id="dash-notices">Loading…</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ATTENDANCE -->
+      <section id="sec-attendance" style="display:none;">
+        <div class="section-header"><div class="section-title">Attendance</div></div>
+        <div id="p-att-summary" class="card-glass p-4 mb-4">Loading…</div>
+        <div class="card-glass p-0">
+          <div class="table-responsive"><table class="ss-table">
+            <thead><tr><th>Date</th><th>Status</th><th>Remarks</th></tr></thead>
+            <tbody id="p-att-tbody"><tr><td colspan="3" class="text-center py-4 text-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- MARKS -->
+      <section id="sec-marks" style="display:none;">
+        <div class="section-header"><div class="section-title">Marks &amp; Results</div></div>
+        <div id="p-marks-content">Loading…</div>
+      </section>
+
+      <!-- HOMEWORK -->
+      <section id="sec-homework" style="display:none;">
+        <div class="section-header"><div class="section-title">Homework</div></div>
+        <div id="p-hw-content">Loading…</div>
+      </section>
+
+      <!-- FEES -->
+      <section id="sec-fees" style="display:none;">
+        <div class="section-header"><div class="section-title">Fee Details</div></div>
+        <div id="p-fees-content">Loading…</div>
+      </section>
+
+      <!-- TIMETABLE -->
+      <section id="sec-timetable" style="display:none;">
+        <div class="section-header"><div class="section-title">Timetable</div></div>
+        <div id="p-timetable-content">Loading…</div>
+      </section>
+
+      <!-- NOTICES -->
+      <section id="sec-notices" style="display:none;">
+        <div class="section-header"><div class="section-title">Notices</div></div>
+        <div id="p-notices-content">Loading…</div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div id="install-banner" class="install-banner">
+  <p><i class="bi bi-phone me-2"></i>Install SmartSchool for quick access.</p>
+  <div class="install-actions">
+    <button class="btn-primary-ss" onclick="installApp()"><i class="bi bi-download"></i> Install</button>
+    <button class="btn-ghost" onclick="dismissInstallBanner()">Dismiss</button>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/pwa.js"></script>
+<script src="/js/parent-app.js"></script>
+</body>
+</html>

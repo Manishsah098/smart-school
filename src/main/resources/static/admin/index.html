@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartSchool — Admin Dashboard</title>
+  <meta name="theme-color" content="#4f46e5" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="page-loader" class="page-loader">
+  <div class="spinner-ring"></div>
+  <span style="color:var(--clr-text-muted);font-size:.875rem;">Loading SmartSchool…</span>
+</div>
+
+<!-- Sidebar Mobile Overlay -->
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">SS</div>
+      <div>
+        <div class="sidebar-brand-text">SmartSchool</div>
+        <div class="sidebar-brand-sub">Admin Portal</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Overview</div>
+      <div class="nav-item active" data-page="index.html" data-section="dashboard" onclick="showSection('dashboard',this)">
+        <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
+      </div>
+
+      <div class="sidebar-section">People</div>
+      <div class="nav-item" data-section="students" onclick="showSection('students',this)">
+        <i class="bi bi-people-fill"></i><span>Students</span>
+      </div>
+      <div class="nav-item" data-section="teachers" onclick="showSection('teachers',this)">
+        <i class="bi bi-person-video3"></i><span>Teachers</span>
+      </div>
+      <div class="nav-item" data-section="parents" onclick="showSection('parents',this)">
+        <i class="bi bi-person-heart"></i><span>Parents</span>
+      </div>
+
+      <div class="sidebar-section">Academic</div>
+      <div class="nav-item" data-section="classes" onclick="showSection('classes',this)">
+        <i class="bi bi-building"></i><span>Classes &amp; Sections</span>
+      </div>
+      <div class="nav-item" data-section="fees" onclick="showSection('fees',this)">
+        <i class="bi bi-cash-coin"></i><span>Fee Reports</span>
+      </div>
+
+      <div class="sidebar-section">Communication</div>
+      <div class="nav-item" data-section="notices" onclick="showSection('notices',this)">
+        <i class="bi bi-megaphone-fill"></i><span>Notices</span>
+      </div>
+      <div class="nav-item" data-section="events" onclick="showSection('events',this)">
+        <i class="bi bi-calendar-event-fill"></i><span>Events</span>
+      </div>
+
+      <div class="sidebar-section">System</div>
+      <div class="nav-item" data-section="audit" onclick="showSection('audit',this)">
+        <i class="bi bi-journal-text"></i><span>Audit Logs</span>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="avatar" id="user-avatar">A</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">Administrator</div>
+          <div class="user-role" id="user-role">Admin</div>
+        </div>
+        <button class="btn-ghost" style="padding:.35rem .5rem;border:none;" data-logout title="Logout">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="d-flex align-items-center gap-2">
+        <button class="hamburger" id="hamburger"><i class="bi bi-list"></i></button>
+        <span class="topbar-title" id="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <div id="offline-banner" style="display:none;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fbbf24;border-radius:6px;padding:.3rem .75rem;font-size:.78rem;align-items:center;gap:.4rem;">
+          <i class="bi bi-wifi-off"></i> Offline
+        </div>
+        <button class="btn-ghost" style="padding:.4rem .8rem;font-size:.875rem;" data-logout>
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== SECTIONS ===== -->
+    <div class="page-content">
+
+      <!-- DASHBOARD -->
+      <section id="sec-dashboard">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Good day, <span id="greeting-name">Admin</span> 👋</div>
+            <div class="section-subtitle" id="greeting-date">Loading…</div>
+          </div>
+        </div>
+        <!-- Stats -->
+        <div class="row g-3 mb-4" id="stat-cards">
+          <div class="col-6 col-xl-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(79,70,229,.15);color:#818cf8;"><i class="bi bi-people-fill"></i></div><div><div class="stat-value" id="s-students">—</div><div class="stat-label">Total Students</div></div></div></div>
+          <div class="col-6 col-xl-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(6,182,212,.15);color:#22d3ee;"><i class="bi bi-person-video3"></i></div><div><div class="stat-value" id="s-teachers">—</div><div class="stat-label">Total Teachers</div></div></div></div>
+          <div class="col-6 col-xl-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,.15);color:#34d399;"><i class="bi bi-building"></i></div><div><div class="stat-value" id="s-classes">—</div><div class="stat-label">Total Classes</div></div></div></div>
+          <div class="col-6 col-xl-3"><div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.15);color:#fbbf24;"><i class="bi bi-cash-coin"></i></div><div><div class="stat-value" id="s-fees">—</div><div class="stat-label">Fee Collection</div></div></div></div>
+        </div>
+        <!-- Recent notices -->
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="card-glass p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0 fw-bold">Recent Notices</h6>
+                <button class="btn-ghost" style="padding:.3rem .7rem;font-size:.8rem;" onclick="showSection('notices', document.querySelector('[data-section=notices]'))">View All</button>
+              </div>
+              <div id="recent-notices">Loading…</div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="card-glass p-4">
+              <h6 class="mb-3 fw-bold">Upcoming Events</h6>
+              <div id="recent-events">Loading…</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STUDENTS -->
+      <section id="sec-students" style="display:none;">
+        <div class="section-header">
+          <div><div class="section-title">Students</div><div class="section-subtitle">All enrolled students</div></div>
+          <button class="btn-primary-ss" onclick="openModal('modal-add-student')"><i class="bi bi-plus-lg"></i> Add Student</button>
+        </div>
+        <div class="card-glass p-3 mb-3">
+          <div class="search-wrap"><i class="bi bi-search"></i><input type="text" id="student-search" class="form-input" placeholder="Search by name, ID, class…" oninput="filterStudents(this.value)"></div>
+        </div>
+        <div class="card-glass p-0">
+          <div class="table-responsive"><table class="ss-table" id="students-table">
+            <thead><tr><th>Admission No.</th><th>Name</th><th>Class / Section</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="students-tbody"><tr><td colspan="5" class="text-center py-4 text-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- TEACHERS -->
+      <section id="sec-teachers" style="display:none;">
+        <div class="section-header">
+          <div><div class="section-title">Teachers</div><div class="section-subtitle">Teaching staff</div></div>
+          <button class="btn-primary-ss" onclick="openModal('modal-add-teacher')"><i class="bi bi-plus-lg"></i> Add Teacher</button>
+        </div>
+        <div class="card-glass p-0">
+          <div class="table-responsive"><table class="ss-table">
+            <thead><tr><th>Employee ID</th><th>Name</th><th>Subject</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="teachers-tbody"><tr><td colspan="5" class="text-center py-4 text-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- PARENTS -->
+      <section id="sec-parents" style="display:none;">
+        <div class="section-header">
+          <div><div class="section-title">Parents</div><div class="section-subtitle">Guardian accounts</div></div>
+          <button class="btn-primary-ss" onclick="openModal('modal-add-parent')"><i class="bi bi-plus-lg"></i> Add Parent</button>
+        </div>
+        <div class="card-glass p-0">
+          <div class="table-responsive"><table class="ss-table">
+            <thead><tr><th>Phone</th><th>Name</th><th>Children</th><th>Actions</th></tr></thead>
+            <tbody id="parents-tbody"><tr><td colspan="4" class="text-center py-4 text-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- CLASSES -->
+      <section id="sec-classes" style="display:none;">
+        <div class="section-header">
+          <div><div class="section-title">Classes &amp; Sections</div></div>
+          <button class="btn-primary-ss" onclick="openModal('modal-add-class')"><i class="bi bi-plus-lg"></i> Add Class</button>
+        </div>
+        <div id="classes-list" class="row g-3">Loading…</div>
+      </section>
+
+      <!-- FEES -->
+      <section id="sec-fees" style="display:none;">
+        <div class="section-header"><div class="section-title">Fee Collection Report</div></div>
+        <div id="fee-report-content">Loading…</div>
+      </section>
+
+      <!-- NOTICES -->
+      <section id="sec-notices" style="display:none;">
+        <div class="section-header">
+          <div><div class="section-title">Notices</div></div>
+          <button class="btn-primary-ss" onclick="openModal('modal-add-notice')"><i class="bi bi-plus-lg"></i> New Notice</button>
+        </div>
+        <div id="notices-list">Loading…</div>
+      </section>
+
+      <!-- EVENTS -->
+      <section id="sec-events" style="display:none;">
+        <div class="section-header">
+          <div><div class="section-title">Events</div></div>
+          <button class="btn-primary-ss" onclick="openModal('modal-add-event')"><i class="bi bi-plus-lg"></i> New Event</button>
+        </div>
+        <div id="events-list">Loading…</div>
+      </section>
+
+      <!-- AUDIT -->
+      <section id="sec-audit" style="display:none;">
+        <div class="section-header"><div class="section-title">Audit Logs</div></div>
+        <div class="card-glass p-0">
+          <div class="table-responsive"><table class="ss-table">
+            <thead><tr><th>Date/Time</th><th>User</th><th>Action</th><th>Entity</th><th>Detail</th></tr></thead>
+            <tbody id="audit-tbody"><tr><td colspan="5" class="text-center py-4 text-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+        <div class="d-flex justify-content-center mt-3 gap-2">
+          <button class="btn-ghost" id="audit-prev" onclick="loadAudit(auditPage-1)"><i class="bi bi-chevron-left"></i></button>
+          <span id="audit-page-info" class="text-muted small d-flex align-items-center">Page 1</span>
+          <button class="btn-ghost" id="audit-next" onclick="loadAudit(auditPage+1)"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </section>
+
+    </div><!-- /page-content -->
+  </main>
+</div>
+
+<!-- ===== MODALS ===== -->
+<!-- Add Student -->
+<div id="modal-add-student" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header"><h5><i class="bi bi-person-plus-fill me-2"></i>Add New Student</h5><button class="modal-close" onclick="closeModal('modal-add-student')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <form id="form-add-student">
+        <div class="row g-3">
+          <div class="col-12"><label class="form-label">Full Name *</label><input type="text" id="s-name" class="form-input" required placeholder="Student's full name"></div>
+          <div class="col-md-6"><label class="form-label">Date of Birth</label><input type="date" id="s-dob" class="form-input"></div>
+          <div class="col-md-6"><label class="form-label">Gender</label><select id="s-gender" class="form-input"><option value="">Select</option><option>MALE</option><option>FEMALE</option><option>OTHER</option></select></div>
+          <div class="col-md-6"><label class="form-label">Phone</label><input type="tel" id="s-phone" class="form-input" placeholder="Mobile number"></div>
+          <div class="col-md-6"><label class="form-label">Section *</label><select id="s-section" class="form-input" required><option value="">Loading…</option></select></div>
+          <div class="col-12"><label class="form-label">Address</label><input type="text" id="s-address" class="form-input" placeholder="Home address"></div>
+        </div>
+        <div id="student-add-error" class="alert-ss danger mt-3" style="display:none;"><i class="bi bi-exclamation-circle-fill"></i><span id="student-add-error-msg"></span></div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-add-student')">Cancel</button>
+      <button class="btn-primary-ss" id="btn-save-student" onclick="saveStudent()"><i class="bi bi-check2"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Teacher -->
+<div id="modal-add-teacher" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header"><h5><i class="bi bi-person-plus-fill me-2"></i>Add New Teacher</h5><button class="modal-close" onclick="closeModal('modal-add-teacher')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <form id="form-add-teacher">
+        <div class="row g-3">
+          <div class="col-12"><label class="form-label">Full Name *</label><input type="text" id="t-name" class="form-input" required placeholder="Teacher's full name"></div>
+          <div class="col-md-6"><label class="form-label">Email</label><input type="email" id="t-email" class="form-input" placeholder="Email address"></div>
+          <div class="col-md-6"><label class="form-label">Phone</label><input type="tel" id="t-phone" class="form-input" placeholder="Mobile number"></div>
+          <div class="col-12"><label class="form-label">Qualification</label><input type="text" id="t-qual" class="form-input" placeholder="e.g. M.Sc. Mathematics"></div>
+        </div>
+        <div id="teacher-add-error" class="alert-ss danger mt-3" style="display:none;"><i class="bi bi-exclamation-circle-fill"></i><span id="teacher-add-error-msg"></span></div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-add-teacher')">Cancel</button>
+      <button class="btn-primary-ss" id="btn-save-teacher" onclick="saveTeacher()"><i class="bi bi-check2"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Parent -->
+<div id="modal-add-parent" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header"><h5><i class="bi bi-person-plus-fill me-2"></i>Add Parent / Guardian</h5><button class="modal-close" onclick="closeModal('modal-add-parent')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <form id="form-add-parent">
+        <div class="row g-3">
+          <div class="col-12"><label class="form-label">Full Name *</label><input type="text" id="p-name" class="form-input" required placeholder="Parent/Guardian's full name"></div>
+          <div class="col-md-6"><label class="form-label">Phone (Username) *</label><input type="tel" id="p-phone" class="form-input" required placeholder="10-digit mobile number"></div>
+          <div class="col-md-6"><label class="form-label">Email</label><input type="email" id="p-email" class="form-input" placeholder="Email address"></div>
+          <div class="col-12"><label class="form-label">Link Children (Student IDs, comma-separated)</label><input type="text" id="p-children" class="form-input" placeholder="STU20260001, STU20260002"></div>
+        </div>
+        <div id="parent-add-error" class="alert-ss danger mt-3" style="display:none;"><i class="bi bi-exclamation-circle-fill"></i><span id="parent-add-error-msg"></span></div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-add-parent')">Cancel</button>
+      <button class="btn-primary-ss" id="btn-save-parent" onclick="saveParent()"><i class="bi bi-check2"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Notice -->
+<div id="modal-add-notice" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header"><h5><i class="bi bi-megaphone-fill me-2"></i>New Notice</h5><button class="modal-close" onclick="closeModal('modal-add-notice')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <div class="row g-3">
+        <div class="col-12"><label class="form-label">Title *</label><input type="text" id="n-title" class="form-input" required placeholder="Notice title"></div>
+        <div class="col-md-6"><label class="form-label">Audience</label><select id="n-audience" class="form-input"><option value="ALL">All</option><option value="STUDENTS">Students</option><option value="TEACHERS">Teachers</option><option value="PARENTS">Parents</option></select></div>
+        <div class="col-md-6"><label class="form-label">Priority</label><select id="n-priority" class="form-input"><option value="NORMAL">Normal</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select></div>
+        <div class="col-12"><label class="form-label">Content *</label><textarea id="n-content" class="form-input" rows="4" placeholder="Notice content…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-add-notice')">Cancel</button>
+      <button class="btn-primary-ss" onclick="saveNotice()"><i class="bi bi-check2"></i> Publish</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Event -->
+<div id="modal-add-event" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header"><h5><i class="bi bi-calendar-plus-fill me-2"></i>New Event</h5><button class="modal-close" onclick="closeModal('modal-add-event')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <div class="row g-3">
+        <div class="col-12"><label class="form-label">Event Title *</label><input type="text" id="ev-title" class="form-input" required placeholder="Event name"></div>
+        <div class="col-md-6"><label class="form-label">Date *</label><input type="date" id="ev-date" class="form-input" required></div>
+        <div class="col-md-6"><label class="form-label">Type</label><select id="ev-type" class="form-input"><option value="GENERAL">General</option><option value="HOLIDAY">Holiday</option><option value="EXAM">Exam</option><option value="SPORTS">Sports</option><option value="CULTURAL">Cultural</option></select></div>
+        <div class="col-12"><label class="form-label">Description</label><textarea id="ev-desc" class="form-input" rows="3" placeholder="Event details…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-add-event')">Cancel</button>
+      <button class="btn-primary-ss" onclick="saveEvent()"><i class="bi bi-check2"></i> Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Password Confirm -->
+<div id="modal-reset-pwd" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header"><h5><i class="bi bi-key-fill me-2 text-warning"></i>Reset Password</h5><button class="modal-close" onclick="closeModal('modal-reset-pwd')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="modal-body">
+      <div class="alert-ss warning"><i class="bi bi-exclamation-triangle-fill"></i><span>A new temporary password will be generated and displayed. The user will be required to change it on next login.</span></div>
+      <div id="reset-pwd-result" class="mt-3" style="display:none;">
+        <div class="form-label">New Temporary Password:</div>
+        <div class="d-flex gap-2 align-items-center">
+          <input type="text" id="reset-pwd-value" class="form-input" readonly style="font-family:monospace;font-size:1.1rem;">
+          <button class="btn-ghost" onclick="copyPwd()"><i class="bi bi-clipboard"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-reset-pwd')">Close</button>
+      <button class="btn-primary-ss" id="btn-do-reset" onclick="doReset()"><i class="bi bi-key"></i> Reset Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Install Banner -->
+<div id="install-banner" class="install-banner">
+  <p><i class="bi bi-phone me-2"></i>Install SmartSchool as an app for quick access.</p>
+  <div class="install-actions">
+    <button class="btn-primary-ss" onclick="installApp()"><i class="bi bi-download"></i> Install</button>
+    <button class="btn-ghost" onclick="dismissInstallBanner()">Dismiss</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/pwa.js"></script>
+<script src="/js/admin-app.js"></script>
+</body>
+</html>
